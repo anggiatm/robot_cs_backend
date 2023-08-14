@@ -9,6 +9,8 @@ const qaQuery = require("./queries/question_answer");
 
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
+const axios = require("axios");
 
 const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
 
@@ -41,7 +43,7 @@ const detectIntenText = async (languageCode, queryText, sessionId) => {
 
   const responses = await sessionClient.detectIntent(request);
   // streamingDetectIntent
-  // console.log(responses);
+  console.log(responses);
 
   const result = responses[0].queryResult;
   const audioFile = responses[0].outputAudio;
@@ -148,6 +150,36 @@ webApp.post("/dialogflow-text", async (req, res) => {
   res.send(responseData);
 });
 
+webApp.post("/gpt", (req, res) => {
+  const userInput = req.body.queryText;
+
+  console.log(userInput);
+
+  // axios
+  //   .post(
+  //     "https://api.openai.com/v1/engines/davinci/completions",
+  //     {
+  //       prompt: userInput,
+  //       engine: "davinci",
+  //       max_tokens: 2048,
+  //     },
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer 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`,
+  //       },
+  //     }
+  //   )
+  //   .then((response) => {
+  //     const GPTResponse = response.data.choices[0].text;
+  //     // Send the response from GPT back to Dialogflow
+  //     res.json({ fulfillmentText: GPTResponse });
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     res.json({ fulfillmentText: "Error Occured" });
+  //   });
+});
 webApp.listen(PORT, () => {
   console.log(`Server is up and running at ${PORT}`);
 });
